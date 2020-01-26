@@ -2,8 +2,8 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders without error', () => {
   const { getByText } = render(<App />);
-  const linkElement = getByText(/Time tracking App/i);
-  expect(linkElement).toBeInTheDocument();
+  const headerElement = getByText(/Time tracking App/i);
+  expect(headerElement).toBeInTheDocument();
 });

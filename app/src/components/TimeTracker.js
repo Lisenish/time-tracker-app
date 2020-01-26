@@ -7,7 +7,17 @@ import Typography from "@material-ui/core/Typography";
 import AddAlarmIcon from "@material-ui/icons/AddAlarm";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import StopIcon from "@material-ui/icons/Stop";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  startTracker,
+  stopTracker,
+  changeSessionName
+} from "../actions/tracker";
+import { getTrackerState } from "../selectors/tracker";
+import formatMsToTimeString from "../services/time-formatter";
+import { addTimeLog } from "../actions/time-logs";
+import { loadTrackerState } from "../actions/tracker-persistance";
 
 const useStyles = makeStyles(theme => ({
   buttonMargin: {
@@ -15,57 +25,76 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function TimeTracker() {
+export default function TimeTracker({ className }) {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
-  const [isTrackerStarted, setIsTrackerStarted] = useState(false);
+  useEffect(() => dispatch(loadTrackerState()), [dispatch]);
+  const trackerState = useSelector(getTrackerState);
 
-  const handleStartTracker = () => setIsTrackerStarted(true);
-  const handleStopTracker = () => setIsTrackerStarted(false);
+  const elapsedTime = trackerState.elapsedTime;
+  const sessionName = trackerState.sessionName;
+
+  const handleStartTracker = () => dispatch(startTracker());
+  const handleStopTracker = () => dispatch(stopTracker());
+
+  const handleAddTimeLog = () => dispatch(addTimeLog(sessionName, elapsedTime));
+
+  const handleChangeName = event =>
+    dispatch(changeSessionName(event.target.value));
 
   return (
-    <>
-      <Grid container spacing={1} justify="center" alignItems="center">
-        <Grid item xs={12} md={8}>
-          <TextField
-            fullWidth
-            placeholder="What are you working on?"
-            variant="outlined"
-          />
-        </Grid>
-
-        <Grid item xs={4} md={1}>
-          <Typography variant="body1">00:00:00</Typography>
-        </Grid>
-
-        <Grid item xs={8} md={3}>
-          {!isTrackerStarted ? (
-            <IconButton
-              className={classes.buttonMargin}
-              aria-label="start"
-              onClick={handleStartTracker}
-            >
-              <PlayArrowIcon />
-            </IconButton>
-          ) : (
-            <IconButton
-              className={classes.buttonMargin}
-              aria-label="stop"
-              onClick={handleStopTracker}
-            >
-              <StopIcon />
-            </IconButton>
-          )}
-
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddAlarmIcon />}
-          >
-            Add time-log
-          </Button>
-        </Grid>
+    <Grid
+      className={className}
+      container
+      spacing={1}
+      justify="center"
+      alignItems="center"
+    >
+      <Grid item xs={12} md={8}>
+        <TextField
+          fullWidth
+          placeholder="What are you working on?"
+          variant="outlined"
+          value={sessionName}
+          onChange={handleChangeName}
+        />
       </Grid>
-    </>
+
+      <Grid item xs={4} md={1}>
+        <Typography variant="body1">
+          {formatMsToTimeString(elapsedTime)}
+        </Typography>
+      </Grid>
+
+      <Grid item xs={8} md={3}>
+        {!trackerState.isStarted ? (
+          <IconButton
+            className={classes.buttonMargin}
+            aria-label="start"
+            onClick={handleStartTracker}
+          >
+            <PlayArrowIcon />
+          </IconButton>
+        ) : (
+          <IconButton
+            className={classes.buttonMargin}
+            aria-label="stop"
+            onClick={handleStopTracker}
+          >
+            <StopIcon />
+          </IconButton>
+        )}
+
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddAlarmIcon />}
+          onClick={handleAddTimeLog}
+        >
+          Add time log
+        </Button>
+      </Grid>
+    </Grid>
   );
 }
