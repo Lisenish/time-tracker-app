@@ -3,7 +3,8 @@ import {
   TRACKER_STOP,
   TRACKER_TIMER_TICK,
   TRACKER_STATE_LOADED,
-  TRACKER_SESSION_NAME_CHANGE
+  TRACKER_SESSION_NAME_CHANGE,
+  TRACKER_RESET
 } from "../actions/tracker";
 import { TIME_LOG_ADD } from "../actions/time-logs";
 
@@ -29,6 +30,8 @@ const tracker = (state = initialState, action) => {
         ...state,
         isStarted: false
       };
+    case TRACKER_RESET:
+      return initialState;
     case TIME_LOG_ADD:
       return {
         ...state,

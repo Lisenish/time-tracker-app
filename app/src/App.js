@@ -11,7 +11,8 @@ const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: "white",
     textAlign: "center",
-    height: "100vh"
+    minHeight: "100vh",
+    padding: theme.spacing(2)
   },
   header: {
     marginBottom: theme.spacing(4)

@@ -29,7 +29,10 @@ export default function TimeTracker({ className }) {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  useEffect(() => dispatch(loadTrackerState()), [dispatch]);
+  useEffect(() => {
+    dispatch(loadTrackerState());
+  }, [dispatch]);
+
   const trackerState = useSelector(getTrackerState);
 
   const elapsedTime = trackerState.elapsedTime;

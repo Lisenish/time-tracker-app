@@ -1,4 +1,4 @@
-//TODO: better to return object here and memo string in component?
+//TODO: memo evaluation string in component? Or create re-select selector?
 
 export default function formatMsToTimeString(timeInMs) {
   let seconds = Math.floor(timeInMs / 1000 % 60);
