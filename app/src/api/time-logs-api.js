@@ -3,10 +3,10 @@ import { API_HOST, get, post } from "./api-client";
 //TODO: handle potential errors in fetch, maybe remove hard-coded url, remove stubs
 
 export async function getTimeLogs() {
-  return get(`${API_HOST}/time-logs`).then(mapTimeLogs);
+  return get(`${API_HOST}/time-logs`).then(mapJSONToTimeLogs);
 }
 
-const mapTimeLogs = timeLogs =>
+const mapJSONToTimeLogs = timeLogs =>
   timeLogs.map(timeLog => ({
     ...timeLog,
     createdAt: new Date(timeLog.createdAt)

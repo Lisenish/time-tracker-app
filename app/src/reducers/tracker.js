@@ -17,6 +17,10 @@ const initialState = {
 const tracker = (state = initialState, action) => {
   switch (action.type) {
     case TRACKER_STATE_LOADED:
+      if (!action.loadedState) {
+        return state;
+      }
+
       return { ...action.loadedState, isStarted: false } || initialState;
     case TRACKER_START:
       return {
