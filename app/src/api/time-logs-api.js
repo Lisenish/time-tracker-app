@@ -13,5 +13,7 @@ const mapJSONToTimeLogs = timeLogs =>
   }));
 
 export async function saveTimeLog(timeLog) {
-  return post(`${API_HOST}/time-logs`, timeLog);
+  const timeLogDto = { name: timeLog.name, time: timeLog.time };
+
+  return post(`${API_HOST}/time-logs`, timeLogDto);
 }

@@ -11,7 +11,7 @@ export const addTimeLog = withTrackerDataPostSave((name, time) => dispatch => {
   dispatch(resetTracker());
 
   const timeLog = {
-    id: -1,
+    id: "generated_id", //TODO: generate id here
     name,
     time,
     createdAt: new Date()
