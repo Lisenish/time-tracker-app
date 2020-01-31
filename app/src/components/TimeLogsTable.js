@@ -22,7 +22,7 @@ const useStyle = makeStyles({
     marginLeft: "auto"
   }
 });
-export default function TimeLogsTable({ timeLogs, onFilterChange }) {
+export default function TimeLogsTable({ timeLogs, selectedFilter, onFilterChange }) {
   const classes = useStyle();
 
   return (
@@ -35,7 +35,7 @@ export default function TimeLogsTable({ timeLogs, onFilterChange }) {
           <Select
             id="filter-select"
             labelId="filter-select-label"
-            value={FilterRange.DAY.toString()}
+            value={selectedFilter}
             onChange={onFilterChange}
           >
             <MenuItem value={FilterRange.DAY}>Day</MenuItem>
