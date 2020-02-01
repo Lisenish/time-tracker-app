@@ -38,7 +38,7 @@ function App() {
 
 const Header = props => (
   <Typography {...props} variant="h2">
-    Time tracking App
+    Time Tracking App
   </Typography>
 );
 

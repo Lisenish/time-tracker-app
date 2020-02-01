@@ -1,6 +1,7 @@
 import { resetTracker, stopTracker } from "./tracker";
 import { withTrackerDataPostSave } from "./tracker-persistance";
 import * as timeLogsApi from "./../api/time-logs-api";
+import nanoid from "nanoid";
 
 export const TIME_LOG_ADD = "TIME_LOG_ADD";
 export const TIME_LOG_LOAD_SUCCESS = "TIME_LOG_LOAD_SUCCESS";
@@ -12,7 +13,7 @@ export const addTimeLog = withTrackerDataPostSave((name, time) => dispatch => {
   dispatch(resetTracker());
 
   const timeLog = {
-    id: "generated_id", //TODO: generate id here
+    id: nanoid(10),
     name,
     time,
     createdAt: new Date()

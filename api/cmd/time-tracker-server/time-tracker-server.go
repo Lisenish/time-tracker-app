@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Lisenish/time-tracker-app/api/domain"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,14 +14,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-// TimeLog struct
-type TimeLog struct {
-	ID        primitive.ObjectID `json:"id" bson:"_id, omitempty"`
-	Name      string             `json:"name" bson:"name"`
-	Time      int                `json:"time" bson:"time"`
-	CreatedAt time.Time          `json:"createdAt" bson:"createdAt"`
-}
 
 func main() {
 	e := echo.New()
@@ -35,10 +28,6 @@ func main() {
 
 	// For simplicity we just allow any host
 	e.Use(middleware.CORS())
-
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello my server!")
-	})
 
 	e.GET("/time-logs", func(c echo.Context) error {
 		ctx := c.Request().Context()
@@ -59,7 +48,7 @@ func main() {
 
 		toParam := c.QueryParam("to")
 
-		//TODO: DRY: move to checker function
+		//TODO: DRY: move to params checker function
 		var to time.Time
 		var toError error
 		if toParam != "" {
@@ -76,17 +65,20 @@ func main() {
 
 		timeLogs := client.Database("trackerDB").Collection("timelogs")
 
+		findOptions := options.Find()
+		findOptions.SetSort(bson.D{{Key: "createdAt", Value: 1}})
+
 		cursor, err := timeLogs.Find(ctx, bson.D{
 			{Key: "createdAt", Value: bson.D{{Key: "$gte", Value: from}}},
 			{Key: "createdAt", Value: bson.D{{Key: "$lte", Value: to}}},
-		})
+		}, findOptions)
 
 		if err != nil {
 			return err
 		}
 		defer cursor.Close(ctx)
 
-		var result []TimeLog
+		var result []domain.TimeLog
 		cursor.All(ctx, &result)
 
 		if err := cursor.Err(); err != nil {
@@ -94,7 +86,7 @@ func main() {
 		}
 
 		if len(result) == 0 {
-			result = []TimeLog{}
+			result = []domain.TimeLog{}
 		}
 
 		return c.JSON(http.StatusOK, result)
@@ -103,9 +95,9 @@ func main() {
 	e.POST("/time-logs", func(c echo.Context) error {
 		ctx := c.Request().Context()
 
-		timeLog := new(TimeLog)
+		timeLog := domain.TimeLog{}
 
-		if err := c.Bind(timeLog); err != nil {
+		if err := c.Bind(&timeLog); err != nil {
 			return err
 		}
 		timeLog.CreatedAt = time.Now().UTC()
