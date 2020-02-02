@@ -8,9 +8,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-//Inlined for simplicity, but potentially we can get this connection sting from env
-const mongoURI = "mongodb://localhost:27017"
-
 //Store : Stores collection bounded to mongo
 type Store struct {
 	TimeLogStore TimeLogStore

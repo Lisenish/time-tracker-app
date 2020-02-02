@@ -8,47 +8,29 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-//RegisterTimeLogHandlers : register API endpoints for time log resource
+//registerTimeLogHandlers : register API endpoints for time log resource
 func (h *Handler) registerTimeLogHandlers(group *echo.Group) {
-	group.GET("/time-logs", h.listAll)
-	group.POST("/time-logs", h.createTimeLog)
+	group.GET("/time-logs", h.ListAll)
+	group.POST("/time-logs", h.CreateTimeLog)
 }
 
-func (h *Handler) listAll(c echo.Context) error {
+//ListAll : handler of API list endpoint
+func (h *Handler) ListAll(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	fromParam := c.QueryParam("from")
-
-	var from time.Time
-	var fromError error
-	if fromParam != "" {
-		from, fromError = time.Parse(time.RFC3339, fromParam)
-
-		if fromError != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, `Please provide valid "from" parameter (YYYY-MM-DD)`)
-		}
-	} else {
-		from = time.Now().UTC().Truncate(time.Hour * 24)
+	from, err := parseTimeParam(c, "from", time.Now().UTC().Truncate(time.Hour*24))
+	if err != nil {
+		return err
 	}
 
-	toParam := c.QueryParam("to")
-
-	//TODO: DRY: move to params checker function
-	var to time.Time
-	var toError error
-	if toParam != "" {
-		to, toError = time.Parse(time.RFC3339, toParam)
-
-		if toError != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, `Please provide valid "to" parameter (YYYY-MM-DD)`)
-		}
-	} else {
-		to = time.Now().UTC().Truncate(time.Hour * 24)
+	to, err := parseTimeParam(c, "to", time.Now().UTC().Truncate(time.Hour*24))
+	if err != nil {
+		return err
 	}
 
-	//TODO: add params check (max diff)
+	//TODO: check max range for safety?
 
-	timeLogs, err := h.timeLogCases.ListAll(ctx, from, to)
+	timeLogs, err := h.timeLogCases.ListAll(ctx, *from, *to)
 	if err != nil {
 		return err
 	}
@@ -56,7 +38,8 @@ func (h *Handler) listAll(c echo.Context) error {
 	return c.JSON(http.StatusOK, timeLogs)
 }
 
-func (h *Handler) createTimeLog(c echo.Context) error {
+//CreateTimeLog : handler of API list endpoint
+func (h *Handler) CreateTimeLog(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	timeLog := domain.TimeLog{}
@@ -72,4 +55,23 @@ func (h *Handler) createTimeLog(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, timeLog)
+}
+
+func parseTimeParam(c echo.Context, paramName string, deafultValue time.Time) (*time.Time, error) {
+	param := c.QueryParam(paramName)
+
+	var parsedTime time.Time
+	var err error
+
+	if param != "" {
+		parsedTime, err = time.Parse(time.RFC3339, param)
+
+		if err != nil {
+			return nil, echo.NewHTTPError(http.StatusBadRequest, `Please provide valid "`+paramName+`" parameter (YYYY-MM-DD)`)
+		}
+	} else {
+		parsedTime = time.Now().UTC().Truncate(time.Hour * 24)
+	}
+
+	return &parsedTime, nil
 }

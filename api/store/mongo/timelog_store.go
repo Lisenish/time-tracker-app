@@ -14,7 +14,6 @@ import (
 //TimeLogStore : store implementation for mongo storage
 type TimeLogStore struct {
 	client *mongo.Client
-	//TODO: place a Collection here also?
 }
 
 //Save : save time log to mongo
