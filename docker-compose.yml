@@ -1,0 +1,26 @@
+version: "3.7"
+
+services:
+  api:
+    container_name: time-tracking-api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "1323:1323"
+    depends_on:
+      - "mongo"
+  web:
+    container_name: time-tracking-frontend
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    volumes:
+      - "./client:/app"
+      - "/app/node_modules"
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+  mongo:
+    image: mongo
