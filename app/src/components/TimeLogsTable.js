@@ -56,7 +56,7 @@ export default function TimeLogsTable({ timeLogs, selectedFilter, onFilterChange
           {timeLogs.map(log => (
             <TableRow key={log.id}>
               <TableCell component="th" scope="row">
-                {log.name}
+                {log.name || "Unnamed session"}
               </TableCell>
               <TableCell align="right">
                 {formatMsToTimeString(log.time)}

@@ -15,10 +15,9 @@ export function toDayEnd(date) {
 
 export function getMonday(date) {
   const day = date.getDay() || 7;
-  var result = day;
+  var result = new Date(date);
 
   if (day !== 1) {
-    result = new Date(date);
     result.setHours(-24 * (day - 1));
   }
 
@@ -28,7 +27,7 @@ export function getMonday(date) {
 export function getSunday(date) {
   const result = getMonday(date);
 
-  result.setHours(24 * 6);
+  result.setHours(24 * 7);
 
   return result;
 }
