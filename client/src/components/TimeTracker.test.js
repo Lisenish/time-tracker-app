@@ -1,26 +1,21 @@
 import { fireEvent, render } from "@testing-library/react";
 import React from "react";
-import { Provider } from "react-redux";
-import { storeCreator } from "../store";
+import { renderWithRedux } from "../tests/test-helper";
 import TimeTracker from "./TimeTracker";
-
-let testStore;
 
 beforeEach(() => {
   window.localStorage.__proto__.setItem = jest.fn();
-  testStore = storeCreator();
-
   jest.useFakeTimers();
 });
 
 test("renders initial timer displayed as 00:00:00", () => {
-  const { getByText } = render(reduxify(<TimeTracker />, testStore));
+  const { getByText } = render(renderWithRedux(<TimeTracker />));
   const timer = getByText(/00:00:00/);
   expect(timer).toBeInTheDocument();
 });
 
 test("renders stop button after click on play", () => {
-  const { getByLabelText } = render(reduxify(<TimeTracker />, testStore));
+  const { getByLabelText } = render(renderWithRedux(<TimeTracker />));
 
   fireEvent.click(getByLabelText("start"));
 
@@ -31,7 +26,7 @@ test("renders stop button after click on play", () => {
 
 test("renders timer displayed as 00:00:01, 00:00:02 after start", () => {
   const { getByText, getByLabelText } = render(
-    reduxify(<TimeTracker />, testStore)
+    renderWithRedux(<TimeTracker />)
   );
 
   fireEvent.click(getByLabelText("start"));
@@ -48,7 +43,7 @@ test("renders timer displayed as 00:00:01, 00:00:02 after start", () => {
 
 test("renders timer displayed as 00:00:04 after start and then stop", () => {
   const { getByText, getByLabelText } = render(
-    reduxify(<TimeTracker />, testStore)
+    renderWithRedux(<TimeTracker />)
   );
 
   fireEvent.click(getByLabelText("start"));
@@ -63,7 +58,3 @@ test("renders timer displayed as 00:00:04 after start and then stop", () => {
 
   expect(timer).toBeInTheDocument();
 });
-
-const reduxify = (component, store) => (
-  <Provider store={store}>{component}</Provider>
-);
