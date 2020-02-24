@@ -47,9 +47,11 @@ There is more info in projects README files.
 
 ## Possible Improvements
 
-There is still room for improvement, a lot of improvements. I was limited in time and tried to stick to estimate in the challenge description (days). The list of possible improvements I see, down below:
+There is still room for improvement, a lot of improvements. I was limited in time and tried to stick to estimate in the challenge description (days). 
 
-- More Unit Tests
+The list of possible improvements I see:
+
+- More tests
 - Authorization
 - Ability to delete time logs
 - Ability to update time logs (to correct the mistake)
@@ -57,7 +59,7 @@ There is still room for improvement, a lot of improvements. I was limited in tim
 - Reset current tracking button
 - Pagination in the table
 - More flexible date filter (calendar?) and sorting in a different direction
-- Support of hotkey (space - start the timer, enter - submit)
-- Zero and loading state (skeleton) for table
+- Support of hotkey (space - stop/start the timer, enter - submit)
+- Zero and loading state (skeleton) for the table
 - Int8n
 - Better UI :)

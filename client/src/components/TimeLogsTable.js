@@ -25,30 +25,18 @@ const useStyle = makeStyles({
 
 export default function TimeLogsTable({
   timeLogs,
-  selectedFilter,
+  selectedFilter = FilterRange.DAY,
   onFilterChange
 }) {
   const classes = useStyle();
 
   return (
     <TableContainer component={Paper}>
-      <Toolbar>
-        <Typography variant="h5">Time sessions</Typography>
-
-        <FormControl className={classes.filter}>
-          <InputLabel id="filter-select-label">Filter</InputLabel>
-          <Select
-            id="filter-select"
-            labelId="filter-select-label"
-            value={selectedFilter}
-            onChange={onFilterChange}
-          >
-            <MenuItem value={FilterRange.DAY}>Day</MenuItem>
-            <MenuItem value={FilterRange.WEEK}>Week</MenuItem>
-            <MenuItem value={FilterRange.MONTH}>Month</MenuItem>
-          </Select>
-        </FormControl>
-      </Toolbar>
+      <TableToolbar
+        className={classes.filter}
+        selectedFilter={selectedFilter}
+        onFilterChange={onFilterChange}
+      />
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -57,22 +45,61 @@ export default function TimeLogsTable({
             <TableCell align="right">Date</TableCell>
           </TableRow>
         </TableHead>
+
         <TableBody>
-          {timeLogs.map(log => (
-            <TableRow key={log.id}>
-              <TableCell component="th" scope="row">
-                {log.name || "Unnamed session"}
-              </TableCell>
-              <TableCell align="right">
-                {formatMsToTimeString(log.time)}
-              </TableCell>
-              <TableCell align="right">
-                {log.createdAt.toLocaleDateString()}
-              </TableCell>
-            </TableRow>
-          ))}
+          {timeLogs && timeLogs.length ? (
+            timeLogs.map(createTimeLogRow)
+          ) : (
+            <EmptyState />
+          )}
         </TableBody>
       </Table>
     </TableContainer>
+  );
+}
+
+function TableToolbar({ className, selectedFilter, onFilterChange }) {
+  return (
+    <Toolbar>
+      <Typography variant="h5">Time sessions</Typography>
+
+      <FormControl className={className}>
+        <InputLabel id="filter-select-label">Filter</InputLabel>
+        <Select
+          id="filter-select"
+          labelId="filter-select-label"
+          value={selectedFilter}
+          onChange={onFilterChange}
+        >
+          <MenuItem value={FilterRange.DAY}>Day</MenuItem>
+          <MenuItem value={FilterRange.WEEK}>Week</MenuItem>
+          <MenuItem value={FilterRange.MONTH}>Month</MenuItem>
+        </Select>
+      </FormControl>
+    </Toolbar>
+  );
+}
+
+function EmptyState() {
+  return (
+    <TableRow>
+      <TableCell colSpan={3} align="center">
+        No recorded sessions
+      </TableCell>
+    </TableRow>
+  );
+}
+
+function createTimeLogRow(timeLog) {
+  return (
+    <TableRow key={timeLog.id}>
+      <TableCell component="th" scope="row">
+        {timeLog.name || "Unnamed session"}
+      </TableCell>
+      <TableCell align="right">{formatMsToTimeString(timeLog.time)}</TableCell>
+      <TableCell align="right">
+        {timeLog.createdAt.toLocaleDateString()}
+      </TableCell>
+    </TableRow>
   );
 }
