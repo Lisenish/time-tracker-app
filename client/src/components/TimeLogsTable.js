@@ -22,7 +22,12 @@ const useStyle = makeStyles({
     marginLeft: "auto"
   }
 });
-export default function TimeLogsTable({ timeLogs, selectedFilter, onFilterChange }) {
+
+export default function TimeLogsTable({
+  timeLogs,
+  selectedFilter,
+  onFilterChange
+}) {
   const classes = useStyle();
 
   return (

@@ -1,11 +1,11 @@
 import Container from "@material-ui/core/Container";
-import React from "react";
-import { Provider } from "react-redux";
-import TimeTracker from "./components/TimeTracker";
-import store from "./store";
-import TimeLogs from "./components/TimeLogs";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import React from "react";
+import { Provider } from "react-redux";
+import TimeLogs from "./containers/TimeLogs";
+import TimeTracker from "./containers/TimeTracker";
+import store from "./store";
 
 const useStyles = makeStyles(theme => ({
   root: {

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { changeTimeLogFilter, loadTimeLogs } from "../actions/time-logs";
 import { getFilter, getLoadRange, getTimeLogs } from "../selectors/time-logs";
-import TimeLogsTable from "./TimeLogsTable";
+import TimeLogsTable from "../components/TimeLogsTable";
 
 export default function TimeLogs(props) {
   const dispatch = useDispatch();
