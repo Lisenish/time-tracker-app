@@ -1,4 +1,5 @@
 import FormControl from "@material-ui/core/FormControl";
+import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Paper from "@material-ui/core/Paper";
@@ -12,7 +13,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import React from "react";
+import React, { useState } from "react";
 import { FilterRange } from "../enums/filterRange";
 import formatMsToTimeString from "../services/time-formatter";
 
@@ -26,7 +27,8 @@ const useStyle = makeStyles({
 export default function TimeLogsTable({
   timeLogs,
   selectedFilter = FilterRange.DAY,
-  onFilterChange
+  onFilterChange,
+  onTimeLogChange
 }) {
   const classes = useStyle();
 
@@ -48,7 +50,13 @@ export default function TimeLogsTable({
 
         <TableBody>
           {timeLogs && timeLogs.length ? (
-            timeLogs.map(createTimeLogRow)
+            timeLogs.map(timeLog => (
+              <TimeLogRow
+                key={timeLog.id}
+                timeLog={timeLog}
+                onTimeLogChange={onTimeLogChange}
+              />
+            ))
           ) : (
             <EmptyState />
           )}
@@ -90,11 +98,46 @@ function EmptyState() {
   );
 }
 
-function createTimeLogRow(timeLog) {
+function TimeLogRow({ timeLog, onTimeLogChange }) {
+  const [isEditMode, setIsEditMode] = useState(false);
+  let editedName;
+
+  const handleDoubleClick = () => setIsEditMode(true);
+
+  const handleChange = event => {
+    editedName = event.target.value;
+  };
+
+  const handleKeyDown = event => {
+    if (event.key === "Enter") {
+      handleEditSubmit();
+    } else if (event.key === "Escape") {
+      handleEditCancel();
+    }
+  };
+
+  const handleEditSubmit = () => {
+    setIsEditMode(false);
+    onTimeLogChange({ ...timeLog, name: editedName });
+  };
+
+  const handleEditCancel = () => {
+    setIsEditMode(false);
+    editedName = "";
+  };
+
   return (
-    <TableRow key={timeLog.id}>
-      <TableCell component="th" scope="row">
-        {timeLog.name || "Unnamed session"}
+    <TableRow>
+      <TableCell component="th" scope="row" onDoubleClick={handleDoubleClick}>
+        {isEditMode ? (
+          <Input
+            defaultValue={timeLog.name}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+          />
+        ) : (
+          timeLog.name || "Unnamed session"
+        )}
       </TableCell>
       <TableCell align="right">{formatMsToTimeString(timeLog.time)}</TableCell>
       <TableCell align="right">

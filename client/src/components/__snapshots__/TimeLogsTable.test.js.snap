@@ -101,6 +101,7 @@ exports[`Table renders correctly selected filter WEEK 1`] = `
         <th
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body"
+          onDoubleClick={[Function]}
           scope="row"
         >
           Test Session
@@ -335,6 +336,7 @@ exports[`Table renders correctly with logs 1`] = `
         <th
           aria-sort={null}
           className="MuiTableCell-root MuiTableCell-body"
+          onDoubleClick={[Function]}
           scope="row"
         >
           Test Session

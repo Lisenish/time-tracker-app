@@ -1,11 +1,11 @@
 import {
   TIME_LOG_ADD,
   TIME_LOG_FILTER_CHANGE,
-  TIME_LOG_LOAD_SUCCESS
+  TIME_LOG_LOAD_SUCCESS,
+  TIME_LOG_UPDATE
 } from "../actions/time-logs";
 import { FilterRange } from "../enums/filterRange";
 import {
-
   getMonday,
   getSunday,
   toDayEnd,
@@ -24,12 +24,7 @@ const initialState = {
 const timeLogs = (state = initialState, action) => {
   switch (action.type) {
     case TIME_LOG_ADD:
-      //TODO: check if we in current load range
-      return {
-        ...state,
-        byId: byIdReducer(state.byId, action),
-        allIds: allIdsReducer(state.allIds, action)
-      };
+    case TIME_LOG_UPDATE:
     case TIME_LOG_LOAD_SUCCESS:
       return {
         ...state,
@@ -50,8 +45,8 @@ const timeLogs = (state = initialState, action) => {
 const byIdReducer = (state, action) => {
   switch (action.type) {
     case TIME_LOG_ADD:
+    case TIME_LOG_UPDATE:
       return { ...state, ...{ [action.timeLog.id]: action.timeLog } };
-
     case TIME_LOG_LOAD_SUCCESS:
       return action.timeLogs.reduce((map, timeLog) => {
         map[timeLog.id] = timeLog;
@@ -74,7 +69,7 @@ const allIdsReducer = (state, action) => {
   }
 };
 
-//Should be cacheable selector from reselect, but I decided not to bring another dependency to that simple project
+// Should be cacheable selector from reselect, but I decided not to bring another dependency to that simple project
 function calculateLoadRangeFromFilter(filter) {
   const now = new Date();
 

@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { changeTimeLogFilter, loadTimeLogs } from "../actions/time-logs";
-import { getFilter, getLoadRange, getTimeLogs } from "../selectors/time-logs";
+import { changeTimeLogFilter, loadTimeLogs, updateTimeLog } from "../actions/time-logs";
 import TimeLogsTable from "../components/TimeLogsTable";
+import { getFilter, getLoadRange, getTimeLogs } from "../selectors/time-logs";
 
 export default function TimeLogs(props) {
   const dispatch = useDispatch();
@@ -16,6 +16,7 @@ export default function TimeLogs(props) {
 
   const timeLogs = useSelector(getTimeLogs);
   const handleFilterChange = e => dispatch(changeTimeLogFilter(e.target.value));
+  const handleTimeLogChange = timeLog => dispatch(updateTimeLog(timeLog));
 
   return (
     <div {...props}>
@@ -23,6 +24,7 @@ export default function TimeLogs(props) {
         timeLogs={timeLogs}
         selectedFilter={filter}
         onFilterChange={handleFilterChange}
+        onTimeLogChange={handleTimeLogChange}
       />
     </div>
   );

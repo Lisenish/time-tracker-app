@@ -71,23 +71,12 @@ export default function TimeTracker({ className }) {
       </Grid>
 
       <Grid item xs={8} md={3}>
-        {!trackerState.isStarted ? (
-          <IconButton
-            className={classes.buttonMargin}
-            aria-label="start"
-            onClick={handleStartTracker}
-          >
-            <PlayArrowIcon />
-          </IconButton>
-        ) : (
-          <IconButton
-            className={classes.buttonMargin}
-            aria-label="stop"
-            onClick={handleStopTracker}
-          >
-            <StopIcon />
-          </IconButton>
-        )}
+        <PlayStopButton
+          className={classes.buttonMargin}
+          isStarted={trackerState.isStarted}
+          onPlayClick={handleStartTracker}
+          onStopClick={handleStopTracker}
+        />
 
         <Button
           variant="contained"
@@ -101,3 +90,14 @@ export default function TimeTracker({ className }) {
     </Grid>
   );
 }
+
+const PlayStopButton = ({ isStarted, className, onPlayClick, onStopClick }) =>
+  !isStarted ? (
+    <IconButton className={className} aria-label="start" onClick={onPlayClick}>
+      <PlayArrowIcon />
+    </IconButton>
+  ) : (
+    <IconButton className={className} aria-label="stop" onClick={onStopClick}>
+      <StopIcon />
+    </IconButton>
+  );
